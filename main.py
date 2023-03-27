@@ -1,3 +1,4 @@
+import time
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 
@@ -117,9 +118,33 @@ class Application:
         self.result_area = ScrolledText(self.results_label_frame, height=5)
         self.result_area.pack(fill='both', expand=True)
 
+    def check_status(self):
+        pass
+
+    def draw_point(self, plot, column, row):
+        plot.delete('all')
+
+        prev_x_point, prev_y_point = 0, plot.winfo_height()
+
+        x_data = [i for i in range(row + 1)]
+        y_data_pred = self.Func_predicted.iloc[:row + 1, column].to_list()
+
+        for x_point, y_point in zip(x_data, y_data_pred):
+            y_point = plot.winfo_height() - y_point
+            plot.create_line(prev_x_point, prev_y_point, x_point, y_point, fill='orange', width=2)
+            prev_x_point = x_point
+            prev_y_point = y_point
+
     def process_data(self):
         for i in range(len(self.Func)):
-            print(i)
+            self.check_status()
+
+            self.draw_point(self.Y1_plot, 1, i)
+            self.draw_point(self.Y2_plot, 2, i)
+            self.draw_point(self.Y3_plot, 3, i)
+            self.draw_point(self.Y4_plot, 4, i)
+
+            time.sleep(0.1)
 
     def run(self):
         model = Model(self.mode.get(), self.form.get())
