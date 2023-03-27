@@ -54,7 +54,7 @@ class Application(Tk):
         self.Y1_label_frame.grid(row=0, column=0, rowspan=2, columnspan=2, sticky='WE')
 
         self.Y1_label = Label(self.Y1_label_frame, text='Y1:')
-        self.Y1_label.grid(row=0, column=0, sticky='WE', padx=5, pady=2)
+        self.Y1_label.grid(row=0, column=0, sticky='E', padx=5, pady=2)
 
         self.Y1_value = StringVar()
         self.Y1_value.set('')
@@ -69,7 +69,7 @@ class Application(Tk):
         self.Y2_label_frame.grid(row=0, column=2, rowspan=2, columnspan=2, sticky='WE')
 
         self.Y2_label = Label(self.Y2_label_frame, text='Y2:')
-        self.Y2_label.grid(row=0, column=0, sticky='WE', padx=5, pady=2)
+        self.Y2_label.grid(row=0, column=0, sticky='E', padx=5, pady=2)
 
         self.Y2_value = StringVar()
         self.Y2_value.set('')
@@ -84,7 +84,7 @@ class Application(Tk):
         self.Y3_label_frame.grid(row=2, column=0, rowspan=2, columnspan=2, sticky='WE')
 
         self.Y3_label = Label(self.Y3_label_frame, text='Y3:')
-        self.Y3_label.grid(row=0, column=0, sticky='WE', padx=5, pady=2)
+        self.Y3_label.grid(row=0, column=0, sticky='E', padx=5, pady=2)
 
         self.Y3_value = StringVar()
         self.Y3_value.set('')
@@ -99,7 +99,7 @@ class Application(Tk):
         self.Y4_label_frame.grid(row=2, column=2, rowspan=2, columnspan=2, sticky='WE')
 
         self.Y4_label = Label(self.Y4_label_frame, text='Y4:')
-        self.Y4_label.grid(row=0, column=0, sticky='WE', padx=5, pady=2)
+        self.Y4_label.grid(row=0, column=0, sticky='E', padx=5, pady=2)
 
         self.Y4_value = StringVar()
         self.Y4_value.set('')
