@@ -1,19 +1,17 @@
-import time
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 
 from additional import Mode, Form
 from model import Model
 
-window = Tk()
-window.title('Лабораторна робота 4')
-window.resizable(False, False)
 
-
-class Application:
-    def __init__(self, window):
+class Application(Tk):
+    def __init__(self):
         # 'Режим'
-        self.mode_label_frame = LabelFrame(window, text='Режим')
+        super().__init__()
+        self.title('Лабораторна робота 4')
+        self.resizable(False, False)
+        self.mode_label_frame = LabelFrame(self, text='Режим')
         self.mode_label_frame.grid(row=0, column=0, sticky='NWE', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.mode = StringVar()
@@ -26,7 +24,7 @@ class Application:
         self.mode_extraordinary_radiobutton.grid(row=1, sticky='W')
 
         # 'Форма наближувальної функції'
-        self.form_label_frame = LabelFrame(window, text='Форма')
+        self.form_label_frame = LabelFrame(self, text='Форма')
         self.form_label_frame.grid(row=0, column=1, sticky='NWE', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.form = StringVar()
@@ -39,7 +37,7 @@ class Application:
         self.form_multiplicative_radiobutton.grid(row=2, sticky='W')
 
         # 'Запустити'
-        self.run_button = Button(window, text='Запустити',
+        self.run_button = Button(self, text='Запустити',
                                  command=self.run,
                                  bg='red',
                                  fg='white'
@@ -47,7 +45,7 @@ class Application:
         self.run_button.grid(row=0, column=2, columnspan=2, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         # 'Графіки'
-        self.plots_label_frame = LabelFrame(window, text='Графіки')
+        self.plots_label_frame = LabelFrame(self, text='Графіки')
         self.plots_label_frame.grid(row=1, column=0, rowspan=4, columnspan=4, sticky='WE', padx=5, pady=5, ipadx=5,
                                     ipady=5)
 
@@ -63,7 +61,7 @@ class Application:
         self.Y1_entry = Entry(self.Y1_label_frame, textvariable=self.Y1_value, state=DISABLED)
         self.Y1_entry.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
 
-        self.Y1_plot = Canvas(self.Y1_label_frame)
+        self.Y1_plot = Canvas(self.Y1_label_frame, width=500, height=200, bg='white')
         self.Y1_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
 
         # 'Y2'
@@ -78,7 +76,7 @@ class Application:
         self.Y2_entry = Entry(self.Y2_label_frame, textvariable=self.Y2_value, state=DISABLED)
         self.Y2_entry.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
 
-        self.Y2_plot = Canvas(self.Y2_label_frame)
+        self.Y2_plot = Canvas(self.Y2_label_frame, width=500, height=200, bg='white')
         self.Y2_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
 
         # 'Y3'
@@ -93,7 +91,7 @@ class Application:
         self.Y3_entry = Entry(self.Y3_label_frame, textvariable=self.Y3_value, state=DISABLED)
         self.Y3_entry.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
 
-        self.Y3_plot = Canvas(self.Y3_label_frame)
+        self.Y3_plot = Canvas(self.Y3_label_frame, width=500, height=200, bg='white')
         self.Y3_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
 
         # 'Y4'
@@ -108,11 +106,11 @@ class Application:
         self.Y4_entry = Entry(self.Y4_label_frame, textvariable=self.Y4_value, state=DISABLED)
         self.Y4_entry.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
 
-        self.Y4_plot = Canvas(self.Y4_label_frame)
+        self.Y4_plot = Canvas(self.Y4_label_frame, width=500, height=200, bg='white')
         self.Y4_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
 
         # 'Результати'
-        self.results_label_frame = LabelFrame(window, text='Результати')
+        self.results_label_frame = LabelFrame(self, text='Результати')
         self.results_label_frame.grid(row=5, column=0, columnspan=4, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.result_area = ScrolledText(self.results_label_frame, height=5)
@@ -124,34 +122,46 @@ class Application:
     def draw_point(self, plot, column, row):
         plot.delete('all')
 
-        prev_x_point, prev_y_point = 0, plot.winfo_height()
+        prev_x_point, prev_y_point, prev_y_pred_point = 0, plot.winfo_height(), plot.winfo_height()
 
         x_data = [i for i in range(row + 1)]
+        y_data = self.Func.iloc[:row + 1, column].to_list()
         y_data_pred = self.Func_predicted.iloc[:row + 1, column].to_list()
 
-        for x_point, y_point in zip(x_data, y_data_pred):
+        for x_point, y_point, y_pred_point in zip(x_data, y_data, y_data_pred):
             y_point = plot.winfo_height() - y_point
-            plot.create_line(prev_x_point, prev_y_point, x_point, y_point, fill='orange', width=2)
+            y_pred_point = plot.winfo_height() - y_pred_point
+            plot.create_line(prev_x_point, prev_y_point, x_point, y_point, fill='blue', width=2)
+            plot.create_line(prev_x_point, prev_y_point, x_point, y_pred_point, fill='orange', width=2)
             prev_x_point = x_point
             prev_y_point = y_point
+            prev_y_pred_point = prev_y_pred_point
 
-    def process_data(self):
-        for i in range(len(self.Func)):
-            self.check_status()
+    def update_values(self, index):
+        self.Y1_value.set(self.Func_predicted.iloc[index, 1])
+        self.Y2_value.set(self.Func_predicted.iloc[index, 2])
+        self.Y3_value.set(self.Func_predicted.iloc[index, 3])
+        self.Y4_value.set(self.Func_predicted.iloc[index, 4])
 
-            self.draw_point(self.Y1_plot, 1, i)
-            self.draw_point(self.Y2_plot, 2, i)
-            self.draw_point(self.Y3_plot, 3, i)
-            self.draw_point(self.Y4_plot, 4, i)
+    def update_plots(self, index):
+        self.draw_point(self.Y1_plot, 1, index)
+        self.draw_point(self.Y2_plot, 2, index)
+        self.draw_point(self.Y3_plot, 3, index)
+        self.draw_point(self.Y4_plot, 4, index)
 
-            time.sleep(0.1)
+    def process_data(self, index):
+        self.check_status()
+        self.update_values(index)
+        self.update_plots(index)
+        if index != len(self.Func) - 1:
+            self.after(1, self.process_data, index + 1)
 
     def run(self):
         model = Model(self.mode.get(), self.form.get())
         self.Func, self.Func_predicted = model.restore()
-        self.process_data()
+        self.after(1, self.process_data, 0)
 
 
-application = Application(window)
-
-window.mainloop()
+if __name__ == "__main__":
+    application = Application()
+    application.mainloop()
