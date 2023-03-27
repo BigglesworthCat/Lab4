@@ -9,18 +9,16 @@ class Model:
         self.mode = mode
         self.form = form
 
-        if mode == Mode.NORMAL.name:
-            self.F1 = pd.read_csv('./Final_Pump_Warn/argF1_Warn.txt', header=None, sep='  ')
-            self.F2 = pd.read_csv('./Final_Pump_Warn/argF2_Warn.txt', header=None, sep='  ')
-            self.F3 = pd.read_csv('./Final_Pump_Warn/argF3_Warn.txt', header=None, sep='  ')
-            self.F4 = pd.read_csv('./Final_Pump_Warn/argF4_Warn.txt', header=None, sep='  ')
-            self.Func = pd.read_csv('./Final_Pump_Warn/Func_Warn.txt', header=None, sep='  ')
-        elif mode == Mode.EXTRAORDINARY.name:
-            self.F1 = pd.read_csv('./Final_Pump_Norm/argF1_Norm.txt', header=None, sep='  ')
-            self.F2 = pd.read_csv('./Final_Pump_Norm/argF2_Norm.txt', header=None, sep='  ')
-            self.F3 = pd.read_csv('./Final_Pump_Norm/argF3_Norm.txt', header=None, sep='  ')
-            self.F4 = pd.read_csv('./Final_Pump_Norm/argF4_Norm.txt', header=None, sep='  ')
-            self.Func = pd.read_csv('./Final_Pump_Norm/Func_Norm.txt', header=None, sep='  ')
+        postfix = ''
+        if self.mode == Mode.NORMAL.name:
+            postfix = 'Norm'
+        elif self.mode == Mode.EXTRAORDINARY.name:
+            postfix = 'Warn'
+        self.F1 = pd.read_csv(f'./Final_Pump_{postfix}/argF1_{postfix}.txt', header=None, sep='  ')
+        self.F2 = pd.read_csv(f'./Final_Pump_{postfix}/argF2_{postfix}.txt', header=None, sep='  ')
+        self.F3 = pd.read_csv(f'./Final_Pump_{postfix}/argF3_{postfix}.txt', header=None, sep='  ')
+        self.F4 = pd.read_csv(f'./Final_Pump_{postfix}/argF4_{postfix}.txt', header=None, sep='  ')
+        self.Func = pd.read_csv(f'./Final_Pump_{postfix}/Func_{postfix}.txt', header=None, sep='  ')
 
     def restore_rofl(self):
         noise = np.random.uniform(-0.1, 0.1, size=(len(self.Func), 5))
