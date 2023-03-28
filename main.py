@@ -7,10 +7,11 @@ from model import Model
 
 class Application(Tk):
     def __init__(self):
-        # 'Режим'
         super().__init__()
         self.title('Лабораторна робота 4')
         self.resizable(False, False)
+
+        # 'Режим'
         self.mode_label_frame = LabelFrame(self, text='Режим')
         self.mode_label_frame.grid(row=0, column=0, sticky='NWE', padx=5, pady=5, ipadx=5, ipady=5)
 
@@ -58,8 +59,9 @@ class Application(Tk):
 
         self.Y1_value = StringVar()
         self.Y1_value.set('')
-        self.Y1_entry = Entry(self.Y1_label_frame, textvariable=self.Y1_value, state=DISABLED)
-        self.Y1_entry.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
+        self.Y1_entry = Entry(self.Y1_label_frame, textvariable=self.Y1_value, state=DISABLED,
+                              disabledbackground='white', disabledforeground='black')
+        self.Y1_entry.grid(row=0, column=1, sticky='W', padx=5, pady=2)
 
         self.Y1_plot = Canvas(self.Y1_label_frame, width=500, height=200, bg='white')
         self.Y1_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
@@ -73,8 +75,9 @@ class Application(Tk):
 
         self.Y2_value = StringVar()
         self.Y2_value.set('')
-        self.Y2_entry = Entry(self.Y2_label_frame, textvariable=self.Y2_value, state=DISABLED)
-        self.Y2_entry.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
+        self.Y2_entry = Entry(self.Y2_label_frame, textvariable=self.Y2_value, state=DISABLED,
+                              disabledbackground='white', disabledforeground='black')
+        self.Y2_entry.grid(row=0, column=1, sticky='W', padx=5, pady=2)
 
         self.Y2_plot = Canvas(self.Y2_label_frame, width=500, height=200, bg='white')
         self.Y2_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
@@ -88,8 +91,9 @@ class Application(Tk):
 
         self.Y3_value = StringVar()
         self.Y3_value.set('')
-        self.Y3_entry = Entry(self.Y3_label_frame, textvariable=self.Y3_value, state=DISABLED)
-        self.Y3_entry.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
+        self.Y3_entry = Entry(self.Y3_label_frame, textvariable=self.Y3_value, state=DISABLED,
+                              disabledbackground='white', disabledforeground='black')
+        self.Y3_entry.grid(row=0, column=1, sticky='W', padx=5, pady=2)
 
         self.Y3_plot = Canvas(self.Y3_label_frame, width=500, height=200, bg='white')
         self.Y3_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
@@ -103,8 +107,9 @@ class Application(Tk):
 
         self.Y4_value = StringVar()
         self.Y4_value.set('')
-        self.Y4_entry = Entry(self.Y4_label_frame, textvariable=self.Y4_value, state=DISABLED)
-        self.Y4_entry.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
+        self.Y4_entry = Entry(self.Y4_label_frame, textvariable=self.Y4_value, state=DISABLED,
+                              disabledbackground='white', disabledforeground='black')
+        self.Y4_entry.grid(row=0, column=1, sticky='W', padx=5, pady=2)
 
         self.Y4_plot = Canvas(self.Y4_label_frame, width=500, height=200, bg='white')
         self.Y4_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
