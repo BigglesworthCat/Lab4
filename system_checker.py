@@ -20,46 +20,46 @@ class SystemChecker:
         Y2 = self.Y.iloc[index, 2]
         Y3 = self.Y.iloc[index, 3]
         Y4 = self.Y.iloc[index, 4]
-        reason = []
+        description_of_situation = []
 
         Py1,Py2,Py3,Py4 = 0,0,0,0
         if Y1 < self.Y1_abnormal:
             if Y1 < self.Y1_a:
                 Py1 = 1
-                reason.append('Рівень води в першому резервуарі аварійно малий')
+                description_of_situation.append('Рівень води в першому резервуарі аварійно малий')
             else:
-                reason.append('Рівень води в першому резервуарі нештатний')
+                description_of_situation.append('Рівень води в першому резервуарі нештатний')
                 Py1 = abs(Y1 - self.Y1_abnormal)/abs(self.Y1_abnormal- self.Y1_a)
         
         if Y2 < self.Y2_abnormal:
             if Y2 < self.Y2_a:
                 Py2 = 1
-                reason.append('Напір аварійно низький')
+                description_of_situation.append('Напір аварійно низький')
                 
             else:
-                reason.append('Напір нештатний')
+                description_of_situation.append('Напір нештатний')
                 Py2 = abs(Y2 - self.Y2_abnormal)/abs(self.Y2_abnormal- self.Y2_a)
 
 
         if Y3 > self.Y3_abnormal:
             if Y3 > self.Y3_a:
-                reason.append('Температура аварійно висока')
+                description_of_situation.append('Температура аварійно висока')
                 Py3 = 1
             else:
-                reason.append('Температура нештатна')
+                description_of_situation.append('Температура нештатна')
                 Py3 = abs(Y3 - self.Y3_abnormal)/abs(self.Y3_abnormal- self.Y3_a)
                 
         if Y4 > self.Y4_abnormal:
             if Y4 > self.Y4_a:
-                reason.append('Рівень води в другому резервуарі аварійно високий')
+                description_of_situation.append('Рівень води в другому резервуарі аварійно високий')
                 Py4 = 1
             else:
-                reason.append('Рівень води в другому резервуарі нештатний')
+                description_of_situation.append('Рівень води в другому резервуарі нештатний')
                 
                 Py4 = abs(Y4 - self.Y4_abnormal)/abs(self.Y4_abnormal- self.Y4_a)
 
         self.F =  1 - (1-Py1)*(1-Py2)*(1-Py3)*(1-Py4)
-        self.reasons = reason
+        self.description_of_situation = description_of_situation
 
 
 
@@ -71,25 +71,25 @@ class SystemChecker:
     def get_status(self,index):
         self.get_risk_rate(index)
         F = self.F
-        reasons = self.reasons
+        description_of_situation = self.description_of_situation
         if 0 <= F <= 1/8: 
-            description = 'Безпечна ситуація '
+            type_of_situation = 'Безпечна ситуація '
         elif F <=1/4:
-            description = 'Позаштатна ситуація за одним параметром'
+            type_of_situation = 'Позаштатна ситуація за одним параметром'
         elif F <= 3/8:
-            description = 'Позаштатна ситуація за декількома параметрами'
+            type_of_situation = 'Позаштатна ситуація за декількома параметрами'
         elif F <= 1/2:
-            description = 'Спостерігається загроза аварії'
+            type_of_situation = 'Спостерігається загроза аварії'
         elif F <= 5/8:
-            description = 'Висока загроза аварії'
+            type_of_situation = 'Висока загроза аварії'
         elif F <= 3/4:
-            description = 'Критична ситуація'
+            type_of_situation = 'Критична ситуація'
         elif F <= 7/8:
-            description = 'Шанс уникнути аварії винятково малий'
+            type_of_situation = 'Шанс уникнути аварії винятково малий'
         elif F <= 1:
-            description = 'Аварія'
+            type_of_situation = 'Аварія'
 
-        return {'level_of_danger': F, 'description': description, 'reasons': reasons}
+        return {'level_of_danger': F, 'type_of_situation': type_of_situation, 'description_of_situation':description_of_situation}
 
             
         
