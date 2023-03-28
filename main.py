@@ -204,8 +204,8 @@ class Application(Tk):
         prev_x_point, prev_y_point, prev_y_pred_point = 0, plot.winfo_height(), plot.winfo_height()
 
         x_data = [i for i in range(row + 1)]
-        y_data = self.Func.iloc[:row + 1, column].to_list()
-        y_data_pred = self.Yed.iloc[:row + 1, column].to_list()
+        y_data = self.Y.iloc[:row + 1, column].to_list()
+        y_data_pred = self.Y_pred.iloc[:row + 1, column].to_list()
 
         for x_point, y_point, y_pred_point in zip(x_data, y_data, y_data_pred):
             y_point = plot.winfo_height() - y_point
@@ -217,10 +217,10 @@ class Application(Tk):
             prev_y_pred_point = prev_y_pred_point
 
     def update_values(self, index):
-        self.Y1_value.set(self.Yed.iloc[index, 1])
-        self.Y2_value.set(self.Yed.iloc[index, 2])
-        self.Y3_value.set(self.Yed.iloc[index, 3])
-        self.Y4_value.set(self.Yed.iloc[index, 4])
+        self.Y1_value.set(self.Y_pred.iloc[index, 1])
+        self.Y2_value.set(self.Y_pred.iloc[index, 2])
+        self.Y3_value.set(self.Y_pred.iloc[index, 3])
+        self.Y4_value.set(self.Y_pred.iloc[index, 4])
 
     def update_plots(self, index):
         self.draw_point(self.Y1_plot, 1, index)
@@ -232,12 +232,12 @@ class Application(Tk):
         self.check_status()
         self.update_values(index)
         self.update_plots(index)
-        if index != len(self.Func) - 1:
+        if index != len(self.Y) - 1:
             self.after(1, self.process_data, index + 1)
 
     def run(self):
         model = Model(self.mode.get(), self.form.get())
-        self.Func, self.Yed = model.restore()
+        self.Y, self.Y_pred = model.restore()
         self.after(1, self.process_data, 0)
 
 
