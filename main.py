@@ -5,6 +5,7 @@ from additional import *
 from model import Model
 from system_checker import SystemChecker
 
+
 class Application(Tk):
     def __init__(self):
         super().__init__()
@@ -82,7 +83,8 @@ class Application(Tk):
 
         # 'Додатково'
         self.additional_label_frame = LabelFrame(self, text='Додатково')
-        self.additional_label_frame.grid(row=0, column=2, rowspan=2, columnspan=2, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+        self.additional_label_frame.grid(row=0, column=2, rowspan=2, columnspan=2, sticky='WENS', padx=5, pady=5,
+                                         ipadx=5, ipady=5)
 
         ## 'Ваги цільових функцій'
         self.weight_label_frame = LabelFrame(self.additional_label_frame, text='Ваги цільових функцій')
@@ -227,20 +229,23 @@ class Application(Tk):
         self.draw_point(self.Y2_plot, 2, index)
         self.draw_point(self.Y3_plot, 3, index)
         self.draw_point(self.Y4_plot, 4, index)
-        
-        
+
+    def update_status(self, index):
+        status = self.checker.get_status(index)
+        danger_level = status['danger_level']
+        situation_type = status['situation_type']
+        situation_description = status['situation_description']
+        self.result_area.insert(END, f'Danger level: {danger_level}\nSituation type: {situation_type}\n')
+        if situation_description != '':
+            self.result_area.insert(END, f'Situation description: {situation_description}\n\n')
+        else:
+            self.result_area.insert(END, '\n')
 
     def process_data(self, index):
         self.check_status()
         self.update_values(index)
         self.update_plots(index)
-        res = self.checker.get_status(index)
-        level_of_danger = res['level_of_danger']
-        type_of_situation = res['type_of_situation']
-        description_of_situation = res['description_of_situation']
-        self.result_area.insert(END, f"Level of danger: {level_of_danger} \n \
-                                    Type of situation {type_of_situation}\n \
-                                    Description of situation: {description_of_situation} \n \n")
+        self.update_status(index)
         if index != len(self.Y) - 1:
             self.after(1, self.process_data, index + 1)
 
@@ -248,8 +253,8 @@ class Application(Tk):
         self.result_area.delete('1.0', END)
         model = Model(self.mode.get(), self.form.get())
         self.Y, self.Y_pred = model.restore_linear()
-        self.checker = SystemChecker(self.Y)
-        
+        self.checker = SystemChecker(self.Y_pred)
+
         self.after(1, self.process_data, 0)
 
 

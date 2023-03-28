@@ -17,15 +17,15 @@ class Model:
             postfix = 'Norm'
         elif self.mode == Mode.EXTRAORDINARY.name:
             postfix = 'Warn'
-        self.F1 = pd.read_csv(f'./Final_Pump_{postfix}/argF1_{postfix}.txt', header=None, sep='  ')
-        self.F2 = pd.read_csv(f'./Final_Pump_{postfix}/argF2_{postfix}.txt', header=None, sep='  ')
-        self.F3 = pd.read_csv(f'./Final_Pump_{postfix}/argF3_{postfix}.txt', header=None, sep='  ')
-        self.F4 = pd.read_csv(f'./Final_Pump_{postfix}/argF4_{postfix}.txt', header=None, sep='  ')
-        self.Func = pd.read_csv(f'./Final_Pump_{postfix}/Func_{postfix}.txt', header=None, sep='  ')
+        self.Y1 = pd.read_csv(f'./Final_Pump_{postfix}/argF1_{postfix}.txt', header=None, sep='  ')
+        self.Y2 = pd.read_csv(f'./Final_Pump_{postfix}/argF2_{postfix}.txt', header=None, sep='  ')
+        self.Y3 = pd.read_csv(f'./Final_Pump_{postfix}/argF3_{postfix}.txt', header=None, sep='  ')
+        self.Y4 = pd.read_csv(f'./Final_Pump_{postfix}/argF4_{postfix}.txt', header=None, sep='  ')
+        self.Y = pd.read_csv(f'./Final_Pump_{postfix}/Func_{postfix}.txt', header=None, sep='  ')
 
     def restore_rofl(self):
-        noise = np.random.uniform(-0.1, 0.1, size=(len(self.Func), 5))
-        self.Yed = self.Func + self.Func * noise
+        noise = np.random.uniform(-0.1, 0.1, size=(len(self.Y), 5))
+        self.Y_pred = self.Y + self.Y * noise
 
     def restore_additive(self):
         self.restore_rofl()
@@ -38,9 +38,9 @@ class Model:
             self.restore_additive()
         elif self.form == Form.MULTIPLICATIVE.name:
             self.restore_multiplicative()
-        return self.Func, self.Yed
+        return self.Y, self.Y_pred
 
-    def exponential_smoothing(self,values ,alpha):
+    def exponential_smoothing(self, values, alpha):
         """
         Applies exponential smoothing to a column of a given dataframe using the specified alpha value.
         """
@@ -51,17 +51,17 @@ class Model:
         return pd.Series(smoothed_values)
     
     def restore_linear(self):
-        X = self.F1.iloc[:,1:]
-        y = self.Func.iloc[:,1]
+        X = self.Y1.iloc[:, 1:]
+        y = self.Y.iloc[:, 1]
         regressor = RandomForestRegressor()
-        #preprocess data
+        # preprocess data
         scaler = MinMaxScaler()
         X_scaled = scaler.fit_transform(X)
-        regressor.fit(X_scaled,y)
+        regressor.fit(X_scaled, y)
         y_pred = regressor.predict(X_scaled)
-        self.Yed = self.Func.copy()
-        noise = np.random.uniform(-0.1, 0.1, size=(len(self.Func), 5))
-        self.Yed = self.Func + self.Func * noise
-        self.Yed.iloc[:,1] =  y_pred
+        self.Y_pred = self.Y.copy()
+        noise = np.random.uniform(-0.1, 0.1, size=(len(self.Y), 5))
+        self.Y_pred = self.Y + self.Y * noise
+        self.Y_pred.iloc[:, 1] = y_pred
         # self.Yed.iloc[:,1] = self.exponential_smoothing(self.Yed.iloc[:,1].to_list(),0.1)
-        return self.Func, self.Yed
+        return self.Y, self.Y_pred
