@@ -43,7 +43,7 @@ class Application(Tk):
 
         ## 'Вид поліномів'
         self.polynomials_type_label_frame = LabelFrame(self.polynomials_label_frame, text='Вид поліномів')
-        self.polynomials_type_label_frame.grid(row=0, column=0, sticky='WE', padx=5, pady=5, ipadx=5, ipady=5)
+        self.polynomials_type_label_frame.grid(row=0, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.polynomial_var = StringVar()
         self.polynomial_var.set(Polynom.CHEBYSHEV.name)
@@ -62,7 +62,7 @@ class Application(Tk):
 
         ## 'Степені поліномів'
         self.polynomials_dimensions_label_frame = LabelFrame(self.polynomials_label_frame, text='Степені поліномів')
-        self.polynomials_dimensions_label_frame.grid(row=1, column=0, sticky='WE', padx=5, pady=5, ipadx=5, ipady=5)
+        self.polynomials_dimensions_label_frame.grid(row=1, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.polynomials_dimensions_label_frame.columnconfigure(1, weight=1)
         self.p1_label = Label(self.polynomials_dimensions_label_frame, text='P1:')
@@ -82,11 +82,11 @@ class Application(Tk):
 
         # 'Додатково'
         self.additional_label_frame = LabelFrame(self, text='Додатково')
-        self.additional_label_frame.grid(row=0, column=2, rowspan=2, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+        self.additional_label_frame.grid(row=0, column=2, rowspan=2, columnspan=2, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         ## 'Ваги цільових функцій'
         self.weight_label_frame = LabelFrame(self.additional_label_frame, text='Ваги цільових функцій')
-        self.weight_label_frame.grid(row=0, column=0, sticky='WE', padx=5, pady=5, ipadx=5, ipady=5)
+        self.weight_label_frame.grid(row=0, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.weight = StringVar()
         self.weight.set(Weight.NORMED.name)
@@ -100,7 +100,7 @@ class Application(Tk):
 
         ## 'Метод визначення лямбд'
         self.lambdas_label_frame = LabelFrame(self.additional_label_frame, text='Метод визначення лямбд')
-        self.lambdas_label_frame.grid(row=1, column=0, sticky='WE', padx=5, pady=5, ipadx=5, ipady=5)
+        self.lambdas_label_frame.grid(row=1, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.lambdas = StringVar()
         self.lambdas.set(Lambda.SINGLE_SET.name)
@@ -205,7 +205,7 @@ class Application(Tk):
 
         x_data = [i for i in range(row + 1)]
         y_data = self.Func.iloc[:row + 1, column].to_list()
-        y_data_pred = self.Func_predicted.iloc[:row + 1, column].to_list()
+        y_data_pred = self.Yed.iloc[:row + 1, column].to_list()
 
         for x_point, y_point, y_pred_point in zip(x_data, y_data, y_data_pred):
             y_point = plot.winfo_height() - y_point
@@ -217,10 +217,10 @@ class Application(Tk):
             prev_y_pred_point = prev_y_pred_point
 
     def update_values(self, index):
-        self.Y1_value.set(self.Func_predicted.iloc[index, 1])
-        self.Y2_value.set(self.Func_predicted.iloc[index, 2])
-        self.Y3_value.set(self.Func_predicted.iloc[index, 3])
-        self.Y4_value.set(self.Func_predicted.iloc[index, 4])
+        self.Y1_value.set(self.Yed.iloc[index, 1])
+        self.Y2_value.set(self.Yed.iloc[index, 2])
+        self.Y3_value.set(self.Yed.iloc[index, 3])
+        self.Y4_value.set(self.Yed.iloc[index, 4])
 
     def update_plots(self, index):
         self.draw_point(self.Y1_plot, 1, index)
@@ -237,7 +237,7 @@ class Application(Tk):
 
     def run(self):
         model = Model(self.mode.get(), self.form.get())
-        self.Func, self.Func_predicted = model.restore()
+        self.Func, self.Yed = model.restore()
         self.after(1, self.process_data, 0)
 
 

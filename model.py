@@ -22,7 +22,7 @@ class Model:
 
     def restore_rofl(self):
         noise = np.random.uniform(-0.1, 0.1, size=(len(self.Func), 5))
-        self.Func_predicted = self.Func + self.Func * noise
+        self.Yed = self.Func + self.Func * noise
 
     def restore_additive(self):
         self.restore_rofl()
@@ -35,4 +35,4 @@ class Model:
             self.restore_additive()
         elif self.form == Form.MULTIPLICATIVE.name:
             self.restore_multiplicative()
-        return self.Func, self.Func_predicted
+        return self.Func, self.Yed
