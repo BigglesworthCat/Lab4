@@ -11,7 +11,7 @@ class SystemChecker:
     Y4_abnormal = 80
     Y4_a = 100
 
-    def __int__(self, Y):
+    def __init__(self, Y):
         self.Y = Y
 
     def get_risk_rate(self, index):
@@ -63,11 +63,6 @@ class SystemChecker:
 
 
 
-
-
-
-
-
     def get_status(self,index):
         self.get_risk_rate(index)
         F = self.F
@@ -89,7 +84,7 @@ class SystemChecker:
         elif F <= 1:
             type_of_situation = 'Аварія'
 
-        return {'level_of_danger': F, 'type_of_situation': type_of_situation, 'description_of_situation':description_of_situation}
+        return {'level_of_danger': F, 'type_of_situation': type_of_situation, 'description_of_situation':"\n".join(description_of_situation)}
 
             
         

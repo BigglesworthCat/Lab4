@@ -3,13 +3,13 @@ from tkinter.scrolledtext import ScrolledText
 
 from additional import *
 from model import Model
-
+from system_checker import SystemChecker
 
 class Application(Tk):
     def __init__(self):
         super().__init__()
         self.title('Лабораторна робота 4')
-        self.resizable(False, False)
+        # self.resizable(False, False)
 
         # 'Режим'
         self.mode_label_frame = LabelFrame(self, text='Режим')
@@ -227,17 +227,29 @@ class Application(Tk):
         self.draw_point(self.Y2_plot, 2, index)
         self.draw_point(self.Y3_plot, 3, index)
         self.draw_point(self.Y4_plot, 4, index)
+        
+        
 
     def process_data(self, index):
         self.check_status()
         self.update_values(index)
         self.update_plots(index)
+        res = self.checker.get_status(index)
+        level_of_danger = res['level_of_danger']
+        type_of_situation = res['type_of_situation']
+        description_of_situation = res['description_of_situation']
+        self.result_area.insert(END, f"Level of danger: {level_of_danger} \n \
+                                    Type of situation {type_of_situation}\n \
+                                    Description of situation: {description_of_situation} \n \n")
         if index != len(self.Y) - 1:
             self.after(1, self.process_data, index + 1)
 
     def run(self):
+        self.result_area.delete('1.0', END)
         model = Model(self.mode.get(), self.form.get())
-        self.Y, self.Y_pred = model.restore()
+        self.Y, self.Y_pred = model.restore_linear()
+        self.checker = SystemChecker(self.Y)
+        
         self.after(1, self.process_data, 0)
 
 
