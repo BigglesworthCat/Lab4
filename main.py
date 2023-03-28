@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 
-from additional import Mode, Form
+from additional import *
 from model import Model
 
 
@@ -13,7 +13,7 @@ class Application(Tk):
 
         # 'Режим'
         self.mode_label_frame = LabelFrame(self, text='Режим')
-        self.mode_label_frame.grid(row=0, column=0, sticky='NWE', padx=5, pady=5, ipadx=5, ipady=5)
+        self.mode_label_frame.grid(row=0, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.mode = StringVar()
         self.mode.set(Mode.NORMAL.name)
@@ -26,7 +26,7 @@ class Application(Tk):
 
         # 'Форма наближувальної функції'
         self.form_label_frame = LabelFrame(self, text='Форма')
-        self.form_label_frame.grid(row=0, column=1, sticky='NWE', padx=5, pady=5, ipadx=5, ipady=5)
+        self.form_label_frame.grid(row=1, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.form = StringVar()
         self.form.set(Form.ADDITIVE.name)
@@ -37,17 +37,91 @@ class Application(Tk):
                                                            variable=self.form, value=Form.MULTIPLICATIVE.name)
         self.form_multiplicative_radiobutton.grid(row=2, sticky='W')
 
-        # 'Запустити'
-        self.run_button = Button(self, text='Запустити',
+        # 'Поліноми'
+        self.polynomials_label_frame = LabelFrame(self, text='Поліноми')
+        self.polynomials_label_frame.grid(row=0, column=1, rowspan=2, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+
+        ## 'Вид поліномів'
+        self.polynomials_type_label_frame = LabelFrame(self.polynomials_label_frame, text='Вид поліномів')
+        self.polynomials_type_label_frame.grid(row=0, column=0, sticky='WE', padx=5, pady=5, ipadx=5, ipady=5)
+
+        self.polynomial_var = StringVar()
+        self.polynomial_var.set(Polynom.CHEBYSHEV.name)
+        self.chebyshev_radiobutton = Radiobutton(self.polynomials_type_label_frame, text='Поліноми Чебишева',
+                                                 variable=self.polynomial_var,
+                                                 value=Polynom.CHEBYSHEV.name)
+        self.chebyshev_radiobutton.grid(row=0, sticky='W')
+        self.legandre_radiobutton = Radiobutton(self.polynomials_type_label_frame, text='Поліноми Лежандра',
+                                                variable=self.polynomial_var,
+                                                value=Polynom.LEGANDRE.name)
+        self.legandre_radiobutton.grid(row=1, sticky='W')
+        self.lagerr_radiobutton = Radiobutton(self.polynomials_type_label_frame, text='Поліноми Лагерра',
+                                              variable=self.polynomial_var,
+                                              value=Polynom.LAGERR.name)
+        self.lagerr_radiobutton.grid(row=2, sticky='W')
+
+        ## 'Степені поліномів'
+        self.polynomials_dimensions_label_frame = LabelFrame(self.polynomials_label_frame, text='Степені поліномів')
+        self.polynomials_dimensions_label_frame.grid(row=1, column=0, sticky='WE', padx=5, pady=5, ipadx=5, ipady=5)
+
+        self.polynomials_dimensions_label_frame.columnconfigure(1, weight=1)
+        self.p1_label = Label(self.polynomials_dimensions_label_frame, text='P1:')
+        self.p1_label.grid(row=0, column=0, sticky='E')
+        self.p1_spinbox = Spinbox(self.polynomials_dimensions_label_frame, from_=1, to=4, width=5)
+        self.p1_spinbox.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
+
+        self.p2_label = Label(self.polynomials_dimensions_label_frame, text='P2:')
+        self.p2_label.grid(row=1, column=0, sticky='E')
+        self.p2_spinbox = Spinbox(self.polynomials_dimensions_label_frame, from_=1, to=4, width=5)
+        self.p2_spinbox.grid(row=1, column=1, sticky='WE', padx=5, pady=2)
+
+        self.p3_label = Label(self.polynomials_dimensions_label_frame, text='P3:')
+        self.p3_label.grid(row=2, column=0, sticky='E')
+        self.p3_spinbox = Spinbox(self.polynomials_dimensions_label_frame, from_=1, to=4, width=5)
+        self.p3_spinbox.grid(row=2, column=1, sticky='WE', padx=5, pady=2)
+
+        # 'Додатково'
+        self.additional_label_frame = LabelFrame(self, text='Додатково')
+        self.additional_label_frame.grid(row=0, column=2, rowspan=2, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+
+        ## 'Ваги цільових функцій'
+        self.weight_label_frame = LabelFrame(self.additional_label_frame, text='Ваги цільових функцій')
+        self.weight_label_frame.grid(row=0, column=0, sticky='WE', padx=5, pady=5, ipadx=5, ipady=5)
+
+        self.weight = StringVar()
+        self.weight.set(Weight.NORMED.name)
+        self.normed_radiobutton = Radiobutton(self.weight_label_frame, text='Нормовані Yi', variable=self.weight,
+                                              value=Weight.NORMED.name)
+        self.normed_radiobutton.grid(row=0, sticky='W')
+        self.min_max_radiobutton = Radiobutton(self.weight_label_frame, text='(min(Yi) + max(Yi)) / 2',
+                                               variable=self.weight,
+                                               value=Weight.MIN_MAX.name)
+        self.min_max_radiobutton.grid(row=1, sticky='W')
+
+        ## 'Метод визначення лямбд'
+        self.lambdas_label_frame = LabelFrame(self.additional_label_frame, text='Метод визначення лямбд')
+        self.lambdas_label_frame.grid(row=1, column=0, sticky='WE', padx=5, pady=5, ipadx=5, ipady=5)
+
+        self.lambdas = StringVar()
+        self.lambdas.set(Lambda.SINGLE_SET.name)
+        self.single_set_radiobutton = Radiobutton(self.lambdas_label_frame, text='Одна система', variable=self.lambdas,
+                                                  value=Lambda.SINGLE_SET.name)
+        self.single_set_radiobutton.grid(row=0, sticky='W')
+        self.triple_set_radiobutton = Radiobutton(self.lambdas_label_frame, text='Три системи', variable=self.lambdas,
+                                                  value=Lambda.TRIPLE_SET.name)
+        self.triple_set_radiobutton.grid(row=1, sticky='W')
+
+        ## 'Запустити'
+        self.run_button = Button(self.additional_label_frame, text='Запустити',
                                  command=self.run,
                                  bg='red',
                                  fg='white'
                                  )
-        self.run_button.grid(row=0, column=2, columnspan=2, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+        self.run_button.grid(row=2, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         # 'Графіки'
         self.plots_label_frame = LabelFrame(self, text='Графіки')
-        self.plots_label_frame.grid(row=1, column=0, rowspan=4, columnspan=4, sticky='WE', padx=5, pady=5, ipadx=5,
+        self.plots_label_frame.grid(row=2, column=0, rowspan=4, columnspan=4, sticky='WE', padx=5, pady=5, ipadx=5,
                                     ipady=5)
 
         # 'Y1'
@@ -116,7 +190,7 @@ class Application(Tk):
 
         # 'Результати'
         self.results_label_frame = LabelFrame(self, text='Результати')
-        self.results_label_frame.grid(row=5, column=0, columnspan=4, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+        self.results_label_frame.grid(row=6, column=0, columnspan=4, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.result_area = ScrolledText(self.results_label_frame, height=5)
         self.result_area.pack(fill='both', expand=True)
