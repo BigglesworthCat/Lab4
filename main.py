@@ -253,7 +253,7 @@ class Application(Tk):
 
     def run(self):
         self.result_area.delete('1.0', END)
-        model = Model(self.mode.get(), self.form.get(), 40, 20)
+        model = Model(self.mode.get(), self.form.get(), 80, 20)
         self.Y, self.Y_pred = model.restore_linear()
         self.checker = SystemChecker(self.Y_pred)
         self.limits = self.checker.get_abnormal_and_bebra()
