@@ -200,10 +200,12 @@ class Application(Tk):
     def check_status(self):
         pass
 
-    def draw_point(self, plot, column, row):
+    def draw_point(self, plot, column, row, limits):
         plot.delete('all')
-
         prev_x_point, prev_y_point, prev_y_pred_point = 0, plot.winfo_height(), plot.winfo_height()
+        print(limits[0])
+        plot.create_line(0,plot.winfo_height() - limits[0], plot.winfo_width(), plot.winfo_height() - limits[0], fill ='pink',width=2)
+        plot.create_line(0,plot.winfo_height() - limits[1], plot.winfo_width(), plot.winfo_height() - limits[1], fill ='green',width=2)
 
         x_data = [i for i in range(row + 1)]
         y_data = self.Y.iloc[:row + 1, column].to_list()
@@ -225,10 +227,10 @@ class Application(Tk):
         self.Y4_value.set(self.Y_pred.iloc[index, 4])
 
     def update_plots(self, index):
-        self.draw_point(self.Y1_plot, 1, index)
-        self.draw_point(self.Y2_plot, 2, index)
-        self.draw_point(self.Y3_plot, 3, index)
-        self.draw_point(self.Y4_plot, 4, index)
+        self.draw_point(self.Y1_plot, 1, index, self.limits[0])
+        self.draw_point(self.Y2_plot, 2, index, self.limits[1])
+        self.draw_point(self.Y3_plot, 3, index, self.limits[2])
+        self.draw_point(self.Y4_plot, 4, index, self.limits[3])
 
     def update_status(self, index):
         status = self.checker.get_status(index)
@@ -254,6 +256,8 @@ class Application(Tk):
         model = Model(self.mode.get(), self.form.get())
         self.Y, self.Y_pred = model.restore_linear()
         self.checker = SystemChecker(self.Y_pred)
+        self.limits = self.checker.get_abnormal_and_bebra()
+        
 
         self.after(1, self.process_data, 0)
 

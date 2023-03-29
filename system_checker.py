@@ -14,6 +14,10 @@ class SystemChecker:
     def __init__(self, Y):
         self.Y = Y
 
+    def get_abnormal_and_bebra(self):
+        return [[self.Y1_a, self.Y1_abnormal], [self.Y2_a, self.Y2_abnormal],\
+            [self.Y3_a, self.Y3_abnormal], [self.Y4_a, self.Y4_abnormal]]
+
     def get_risk_rate_and_description(self, index):
         Y1 = self.Y.iloc[index, 1]
         Y2 = self.Y.iloc[index, 2]
