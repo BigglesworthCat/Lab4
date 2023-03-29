@@ -139,7 +139,7 @@ class Application(Tk):
                               disabledbackground='white', disabledforeground='black')
         self.Y1_entry.grid(row=0, column=1, sticky='W', padx=5, pady=2)
 
-        self.Y1_plot = Canvas(self.Y1_label_frame, width=500, height=200, bg='white')
+        self.Y1_plot = Canvas(self.Y1_label_frame, width=PLOT_WIDTH, height=PLOT_HEIGHT, bg='white')
         self.Y1_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
 
         # 'Y2'
@@ -155,7 +155,7 @@ class Application(Tk):
                               disabledbackground='white', disabledforeground='black')
         self.Y2_entry.grid(row=0, column=1, sticky='W', padx=5, pady=2)
 
-        self.Y2_plot = Canvas(self.Y2_label_frame, width=500, height=200, bg='white')
+        self.Y2_plot = Canvas(self.Y2_label_frame, width=PLOT_WIDTH, height=PLOT_HEIGHT, bg='white')
         self.Y2_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
 
         # 'Y3'
@@ -171,7 +171,7 @@ class Application(Tk):
                               disabledbackground='white', disabledforeground='black')
         self.Y3_entry.grid(row=0, column=1, sticky='W', padx=5, pady=2)
 
-        self.Y3_plot = Canvas(self.Y3_label_frame, width=500, height=200, bg='white')
+        self.Y3_plot = Canvas(self.Y3_label_frame, width=PLOT_WIDTH, height=PLOT_HEIGHT, bg='white')
         self.Y3_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
 
         # 'Y4'
@@ -187,7 +187,7 @@ class Application(Tk):
                               disabledbackground='white', disabledforeground='black')
         self.Y4_entry.grid(row=0, column=1, sticky='W', padx=5, pady=2)
 
-        self.Y4_plot = Canvas(self.Y4_label_frame, width=500, height=200, bg='white')
+        self.Y4_plot = Canvas(self.Y4_label_frame, width=PLOT_WIDTH, height=PLOT_HEIGHT, bg='white')
         self.Y4_plot.grid(row=1, column=0, columnspan=2, sticky='WE', padx=5, pady=2)
 
         # 'Результати'
@@ -253,7 +253,7 @@ class Application(Tk):
 
     def run(self):
         self.result_area.delete('1.0', END)
-        model = Model(self.mode.get(), self.form.get())
+        model = Model(self.mode.get(), self.form.get(), 40, 20)
         self.Y, self.Y_pred = model.restore_linear()
         self.checker = SystemChecker(self.Y_pred)
         self.limits = self.checker.get_abnormal_and_bebra()

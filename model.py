@@ -8,19 +8,22 @@ from additional import Mode, Form
 
 
 class Model:
-    def __init__(self, mode, form):
+    def __init__(self, mode, form, N_02, prediction_step):
         self.mode = mode
         self.form = form
+
+        self.N_02 = N_02
+        self.prediction_step = prediction_step
 
         postfix = ''
         if self.mode == Mode.NORMAL.name:
             postfix = 'Norm'
         elif self.mode == Mode.EXTRAORDINARY.name:
             postfix = 'Warn'
-        self.Y1 = pd.read_csv(f'./Final_Pump_{postfix}/argF1_{postfix}.txt', header=None, sep='  ')
-        self.Y2 = pd.read_csv(f'./Final_Pump_{postfix}/argF2_{postfix}.txt', header=None, sep='  ')
-        self.Y3 = pd.read_csv(f'./Final_Pump_{postfix}/argF3_{postfix}.txt', header=None, sep='  ')
-        self.Y4 = pd.read_csv(f'./Final_Pump_{postfix}/argF4_{postfix}.txt', header=None, sep='  ')
+        self.X1 = pd.read_csv(f'./Final_Pump_{postfix}/argF1_{postfix}.txt', header=None, sep='  ')
+        self.X2 = pd.read_csv(f'./Final_Pump_{postfix}/argF2_{postfix}.txt', header=None, sep='  ')
+        self.X3 = pd.read_csv(f'./Final_Pump_{postfix}/argF3_{postfix}.txt', header=None, sep='  ')
+        self.X4 = pd.read_csv(f'./Final_Pump_{postfix}/argF4_{postfix}.txt', header=None, sep='  ')
         self.Y = pd.read_csv(f'./Final_Pump_{postfix}/Func_{postfix}.txt', header=None, sep='  ')
 
     def restore_rofl(self):
@@ -51,6 +54,7 @@ class Model:
         return pd.Series(smoothed_values)
     
     def restore_linear(self):
+        '''
         X = self.Y1.iloc[:, 1:]
         y = self.Y.iloc[:, 1]
         regressor = RandomForestRegressor()
@@ -65,3 +69,11 @@ class Model:
         self.Y_pred.iloc[:, 1] = y_pred
         # self.Yed.iloc[:,1] = self.exponential_smoothing(self.Yed.iloc[:,1].to_list(),0.1)
         return self.Y, self.Y_pred
+        '''
+        predicted_values = []
+        for i in range(0, len(self.Y) - self.N_02 + 1, self.prediction_step):
+            X1 = self.X1[i:i + self.N_02]
+            X2 = self.X2[i:i + self.N_02]
+            X3 = self.X3[i:i + self.N_02]
+            X4 = self.X4[i:i + self.N_02]
+

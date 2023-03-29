@@ -1,5 +1,8 @@
 import enum
 
+PLOT_WIDTH = 500
+PLOT_HEIGHT = 200
+
 
 class Mode(enum.Enum):
     NORMAL = 1
