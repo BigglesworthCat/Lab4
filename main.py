@@ -13,7 +13,7 @@ class Application(Tk):
         # self.resizable(False, False)
 
         self.options_label_frame = LabelFrame(self, text='Налаштування')
-        self.options_label_frame.grid(row=0, column=0, rowspan=3, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+        self.options_label_frame.grid(row=0, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         # 'Режим'
         self.mode_label_frame = LabelFrame(self.options_label_frame, text='Режим')
@@ -42,7 +42,7 @@ class Application(Tk):
         self.form_multiplicative_radiobutton.grid(row=2, sticky='W')
 
         self.shifts_label_frame = LabelFrame(self.options_label_frame, text='Зсуви')
-        self.shifts_label_frame.grid(row=3, column=0, rowspan=2, columnspan=2, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+        self.shifts_label_frame.grid(row=3, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.N_02_label = Label(self.shifts_label_frame, text='N_02:')
         self.N_02_label.grid(row=0, column=0, sticky='E')
@@ -56,7 +56,7 @@ class Application(Tk):
 
         # 'Поліноми'
         self.polynomials_label_frame = LabelFrame(self, text='Поліноми')
-        self.polynomials_label_frame.grid(row=0, column=1, rowspan=2, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+        self.polynomials_label_frame.grid(row=0, column=1, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         ## 'Вид поліномів'
         self.polynomials_type_label_frame = LabelFrame(self.polynomials_label_frame, text='Вид поліномів')
@@ -99,7 +99,7 @@ class Application(Tk):
 
         # 'Додатково'
         self.additional_label_frame = LabelFrame(self, text='Додатково')
-        self.additional_label_frame.grid(row=0, column=2, rowspan=2, columnspan=2, sticky='WENS', padx=5, pady=5,
+        self.additional_label_frame.grid(row=0, column=2, sticky='WENS', padx=5, pady=5,
                                          ipadx=5, ipady=5)
 
         ## 'Ваги цільових функцій'
@@ -220,8 +220,10 @@ class Application(Tk):
         plot.delete('all')
         prev_x_point, prev_y_point, prev_y_pred_point = 0, plot.winfo_height(), plot.winfo_height()
         print(limits[0])
-        plot.create_line(0,plot.winfo_height() - limits[0], plot.winfo_width(), plot.winfo_height() - limits[0], fill ='pink',width=2)
-        plot.create_line(0,plot.winfo_height() - limits[1], plot.winfo_width(), plot.winfo_height() - limits[1], fill ='green',width=2)
+        plot.create_line(0, plot.winfo_height() - limits[0], plot.winfo_width(), plot.winfo_height() - limits[0],
+                         fill='pink', width=2)
+        plot.create_line(0, plot.winfo_height() - limits[1], plot.winfo_width(), plot.winfo_height() - limits[1],
+                         fill='green', width=2)
 
         x_data = [i for i in range(row + 1)]
         y_data = self.Y.iloc[:row + 1, column].to_list()
@@ -269,9 +271,10 @@ class Application(Tk):
 
     def run(self):
         self.result_area.delete('1.0', END)
-        # model = Model(self.mode.get(), self.form.get(), self.N_02_spinbox.get(), self.prediction_step_spinbox.get())
+        # model = Model(self.mode.get(), self.form.get(), int(self.N_02_spinbox.get()),
+        #               int(self.prediction_step_spinbox.get()))
         model = Model(self.mode.get(), self.form.get(), 40, 20)
-        self.Y, self.Y_pred = model.restore_linear()
+        self.Y, self.Y_pred = model.restore()
         self.checker = SystemChecker(self.Y_pred)
         self.limits = self.checker.get_bounds()
 
