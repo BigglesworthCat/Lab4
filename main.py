@@ -12,8 +12,11 @@ class Application(Tk):
         self.title('Лабораторна робота 4')
         # self.resizable(False, False)
 
+        self.options_label_frame = LabelFrame(self, text='Налаштування')
+        self.options_label_frame.grid(row=0, column=0, rowspan=3, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+
         # 'Режим'
-        self.mode_label_frame = LabelFrame(self, text='Режим')
+        self.mode_label_frame = LabelFrame(self.options_label_frame, text='Режим')
         self.mode_label_frame.grid(row=0, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.mode = StringVar()
@@ -26,7 +29,7 @@ class Application(Tk):
         self.mode_extraordinary_radiobutton.grid(row=1, sticky='W')
 
         # 'Форма наближувальної функції'
-        self.form_label_frame = LabelFrame(self, text='Форма')
+        self.form_label_frame = LabelFrame(self.options_label_frame, text='Форма')
         self.form_label_frame.grid(row=1, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.form = StringVar()
@@ -37,6 +40,19 @@ class Application(Tk):
         self.form_multiplicative_radiobutton = Radiobutton(self.form_label_frame, text='Мультиплікативна',
                                                            variable=self.form, value=Form.MULTIPLICATIVE.name)
         self.form_multiplicative_radiobutton.grid(row=2, sticky='W')
+
+        self.shifts_label_frame = LabelFrame(self.options_label_frame, text='Зсуви')
+        self.shifts_label_frame.grid(row=3, column=0, rowspan=2, columnspan=2, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+
+        self.N_02_label = Label(self.shifts_label_frame, text='N_02:')
+        self.N_02_label.grid(row=0, column=0, sticky='E')
+        self.N_02_spinbox = Spinbox(self.shifts_label_frame, from_=1, to=4, width=5)
+        self.N_02_spinbox.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
+
+        self.prediction_step_label = Label(self.shifts_label_frame, text='Крок передбачення:')
+        self.prediction_step_label.grid(row=1, column=0, sticky='E')
+        self.prediction_step_spinbox = Spinbox(self.shifts_label_frame, from_=1, to=4, width=5)
+        self.prediction_step_spinbox.grid(row=1, column=1, sticky='WE', padx=5, pady=2)
 
         # 'Поліноми'
         self.polynomials_label_frame = LabelFrame(self, text='Поліноми')
@@ -123,7 +139,7 @@ class Application(Tk):
 
         # 'Графіки'
         self.plots_label_frame = LabelFrame(self, text='Графіки')
-        self.plots_label_frame.grid(row=2, column=0, rowspan=4, columnspan=4, sticky='WE', padx=5, pady=5, ipadx=5,
+        self.plots_label_frame.grid(row=3, column=0, rowspan=4, columnspan=4, sticky='WE', padx=5, pady=5, ipadx=5,
                                     ipady=5)
 
         # 'Y1'
@@ -192,7 +208,7 @@ class Application(Tk):
 
         # 'Результати'
         self.results_label_frame = LabelFrame(self, text='Результати')
-        self.results_label_frame.grid(row=6, column=0, columnspan=4, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
+        self.results_label_frame.grid(row=7, column=0, columnspan=4, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.result_area = ScrolledText(self.results_label_frame, height=5)
         self.result_area.pack(fill='both', expand=True)
@@ -253,11 +269,11 @@ class Application(Tk):
 
     def run(self):
         self.result_area.delete('1.0', END)
+        # model = Model(self.mode.get(), self.form.get(), self.N_02_spinbox.get(), self.prediction_step_spinbox.get())
         model = Model(self.mode.get(), self.form.get(), 40, 20)
         self.Y, self.Y_pred = model.restore_linear()
         self.checker = SystemChecker(self.Y_pred)
-        self.limits = self.checker.get_abnormal_and_bebra()
-        
+        self.limits = self.checker.get_bounds()
 
         self.after(1, self.process_data, 0)
 
