@@ -1,6 +1,6 @@
 import enum
 
-PLOT_WIDTH = 500
+PLOT_WIDTH = 600
 PLOT_HEIGHT = 200
 
 

@@ -219,24 +219,27 @@ class Application(Tk):
     def draw_point(self, plot, column, row, limits):
         plot.delete('all')
         prev_x_point, prev_y_point, prev_y_pred_point = 0, plot.winfo_height(), plot.winfo_height()
-        print(limits[0])
         plot.create_line(0, plot.winfo_height() - limits[0], plot.winfo_width(), plot.winfo_height() - limits[0],
-                         fill='pink', width=2)
+                        fill='pink', width=2)
         plot.create_line(0, plot.winfo_height() - limits[1], plot.winfo_width(), plot.winfo_height() - limits[1],
-                         fill='green', width=2)
-
+                        fill='green', width=2)
+        plot.create_line(500,self.winfo_height(),500,0,fill='purple')
         x_data = [i for i in range(row + 1)]
         y_data = self.Y.iloc[:row + 1, column].to_list()
         y_data_pred = self.Y_pred.iloc[:row + 1, column].to_list()
 
-        for x_point, y_point, y_pred_point in zip(x_data, y_data, y_data_pred):
+        for x_point, y_point in zip(x_data, y_data):
             y_point = plot.winfo_height() - y_point
-            y_pred_point = plot.winfo_height() - y_pred_point
             plot.create_line(prev_x_point, prev_y_point, x_point, y_point, fill='blue', width=2)
-            plot.create_line(prev_x_point, prev_y_point, x_point, y_pred_point, fill='orange', width=2)
             prev_x_point = x_point
             prev_y_point = y_point
-            prev_y_pred_point = prev_y_pred_point
+
+        prev_x_point, prev_y_point, prev_y_pred_point = 0, plot.winfo_height(), plot.winfo_height()
+        for x_point, y_pred_point in zip(x_data, y_data_pred):
+            y_pred_point = plot.winfo_height() - y_pred_point
+            plot.create_line(prev_x_point, prev_y_point, x_point, y_pred_point, fill='orange', width=2)
+            prev_x_point = x_point
+            prev_y_point = y_pred_point
 
     def update_values(self, index):
         self.Y1_value.set(self.Y_pred.iloc[index, 1])
@@ -266,7 +269,7 @@ class Application(Tk):
         self.update_values(index)
         self.update_plots(index)
         self.update_status(index)
-        if index != len(self.Y) - 1:
+        if index != len(self.Y_pred) - 1:
             self.after(1, self.process_data, index + 1)
 
     def run(self):
@@ -274,7 +277,8 @@ class Application(Tk):
         # model = Model(self.mode.get(), self.form.get(), int(self.N_02_spinbox.get()),
         #               int(self.prediction_step_spinbox.get()))
         model = Model(self.mode.get(), self.form.get(), 40, 20)
-        self.Y, self.Y_pred = model.restore()
+        self.Y, self.Y_pred = model.restore_rofl2()
+        print(self.Y_pred.shape)
         self.checker = SystemChecker(self.Y_pred)
         self.limits = self.checker.get_bounds()
 
