@@ -213,15 +213,18 @@ class Application(Tk):
         self.result_area = ScrolledText(self.results_label_frame, height=5)
         self.result_area.pack(fill='both', expand=True)
 
+        # shift all plots by 5 pixels up
+        self.shift_y  = -5
+
     def check_status(self):
         pass
 
     def draw_point(self, plot, column, row, limits):
         plot.delete('all')
         prev_x_point, prev_y_point, prev_y_pred_point = 0, plot.winfo_height(), plot.winfo_height()
-        plot.create_line(0, plot.winfo_height() - limits[0], plot.winfo_width(), plot.winfo_height() - limits[0],
+        plot.create_line(0, plot.winfo_height() - limits[0] + self.shift_y, plot.winfo_width(), plot.winfo_height() - limits[0] + self.shift_y,
                         fill='pink', width=2)
-        plot.create_line(0, plot.winfo_height() - limits[1], plot.winfo_width(), plot.winfo_height() - limits[1],
+        plot.create_line(0, plot.winfo_height() - limits[1] + self.shift_y, plot.winfo_width(), plot.winfo_height() - limits[1] + self.shift_y,
                         fill='green', width=2)
         plot.create_line(500,self.winfo_height(),500,0,fill='purple')
         x_data = [i for i in range(row + 1)]
@@ -229,17 +232,41 @@ class Application(Tk):
         y_data_pred = self.Y_pred.iloc[:row + 1, column].to_list()
 
         for x_point, y_point in zip(x_data, y_data):
-            y_point = plot.winfo_height() - y_point
+            y_point = plot.winfo_height() - y_point + self.shift_y
             plot.create_line(prev_x_point, prev_y_point, x_point, y_point, fill='blue', width=2)
             prev_x_point = x_point
             prev_y_point = y_point
 
         prev_x_point, prev_y_point, prev_y_pred_point = 0, plot.winfo_height(), plot.winfo_height()
         for x_point, y_pred_point in zip(x_data, y_data_pred):
-            y_pred_point = plot.winfo_height() - y_pred_point
+            y_pred_point = plot.winfo_height() - y_pred_point + self.shift_y
             plot.create_line(prev_x_point, prev_y_point, x_point, y_pred_point, fill='orange', width=2)
             prev_x_point = x_point
             prev_y_point = y_pred_point
+
+        # Define the coordinates of the X-axis line
+        x1, y1 = 0, plot.winfo_height()
+        x2, y2 = plot.winfo_width(), plot.winfo_height()
+        ticks_range = 30
+        ticks = x2//ticks_range
+        # Draw the tick marks and labels
+        for i in range(1, ticks):
+            x = i * ticks_range
+            plot.create_line(x, y1, x, y1 - 5)
+            plot.create_text(x, y1 - 10, text=str(i * ticks_range), fill="black", font=("Arial", 5))
+            
+        ticks = y1//ticks_range
+        y_tick_values = [i * ticks_range + ticks_range for i in range(ticks)]
+        y_tick_values.reverse()
+        if len(y_tick_values) != ticks:
+            print(ticks)
+            print(y_tick_values)
+            raise ValueError
+        for j in range(ticks):
+            y = j * ticks_range
+            plot.create_line(5, y + self.shift_y, 0, y + self.shift_y)
+            plot.create_text(10, y + self.shift_y, text=str(y_tick_values[j]), fill="black", font=("Arial", 5))
+            
 
     def update_values(self, index):
         self.Y1_value.set(self.Y_pred.iloc[index, 1])
