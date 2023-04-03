@@ -2,7 +2,7 @@ import statsmodels.api as sm
 
 from additional import Mode
 from methods import *
-from method import *
+from pycache.method import *
 
 
 class Model:
