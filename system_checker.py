@@ -57,10 +57,53 @@ class SystemChecker:
             else:
                 situation_description.append('Рівень води в другому резервуарі нештатний.')
                 P_y4 = abs(Y4 - self.Y4_abnormal) / abs(self.Y4_abnormal - self.Y4_a)
+                
+        self.F1 = 1 - (1 - P_y1) * (1 - P_y2) * (1 - P_y3) * (1 - P_y4)
+        self.F2 = 1 - (1 - P_y1) * (1 - P_y2) * (1 - P_y3) 
+        self.F3 = 1 - (1 - P_y3)
+        self.F4 = 1 - (1 - P_y1) * (1 - P_y2) * (1 - P_y3) * (1 - P_y4)
+        
 
-        self.F = 1 - (1 - P_y1) * (1 - P_y2) * (1 - P_y3) * (1 - P_y4)
+        
+        self.F = (self.F1 + self.F2 + self.F3 + self.F4)/4
         self.situation_description = "\n".join(situation_description)
 
+    def risk_estimation(self,index):
+        if 0 <= self.F <= 1 / 8:
+            return float('inf')
+        else:
+            if max(self.F1,self.F2,self.F3,self.F4) == self.F1:
+                dy = self.Y.iloc[index,1] - self.Y.iloc[index-1,1]
+                dt = 1 
+                next_value = self.Y.iloc[index,1] + dy
+                while next_value > self.Y1_a:
+                    dt +=1 
+                    next_value += dy
+                
+            elif max(self.F1,self.F2,self.F3,self.F4) == self.F2:
+                dy = self.Y.iloc[index,2] - self.Y.iloc[index-1,2]
+                dt = 1 
+                next_value = self.Y.iloc[index,2] + dy
+                while next_value > self.Y2_a:
+                    dt +=1 
+                    next_value += dy
+            elif max(self.F1,self.F2,self.F3,self.F4) == self.F3:
+                dy = self.Y.iloc[index,3] - self.Y.iloc[index-1,3]
+                dt = 1 
+                next_value = self.Y.iloc[index,3] + dy
+                while next_value < self.Y3_a:
+                    dt +=1 
+                    next_value += dy
+                    
+            elif max(self.F1,self.F2,self.F3,self.F4) == self.F4:
+                dy = self.Y.iloc[index,4] - self.Y.iloc[index-1,4]
+                dt = 1 
+                next_value = self.Y.iloc[index,4] + dy
+                while next_value < self.Y4_a:
+                    dt +=1 
+                    next_value += dy
+        return dt
+    
     def get_situation_type(self):
         if 0 <= self.F <= 1 / 8:
             self.situation_type = 'Безпечна ситуація.'
@@ -82,6 +125,6 @@ class SystemChecker:
     def get_status(self, index):
         self.get_risk_rate_and_description(index)
         self.get_situation_type()
-
+        time_before_a = self.risk_estimation(index)
         return {'danger_level': self.F, 'situation_type': self.situation_type,
-                'situation_description': self.situation_description}
+                'situation_description': self.situation_description,'time_before_a':time_before_a*20}
