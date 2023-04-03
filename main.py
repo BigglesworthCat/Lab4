@@ -245,7 +245,7 @@ class Application(Tk):
         self.results_label_frame = LabelFrame(self, text='Результати')
         self.results_label_frame.grid(row=7, column=0, columnspan=4, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
-        self.result_area = ScrolledText(self.results_label_frame, height=5)
+        self.result_area = ScrolledText(self.results_label_frame, height=10)
         self.result_area.pack(fill='both', expand=True)
 
         # shift all plots by 5 pixels up
@@ -281,13 +281,13 @@ class Application(Tk):
         # Define the coordinates of the X-axis line
         x1, y1 = 0, plot.winfo_height()
         x2, y2 = plot.winfo_width(), plot.winfo_height()
-        ticks_range = 30
+        ticks_range = 40
         ticks = x2 // ticks_range
         # Draw the tick marks and labels
         for i in range(1, ticks):
             x = i * ticks_range
             plot.create_line(x, y1, x, y1 - 5)
-            plot.create_text(x, y1 - 10, text=str(i * ticks_range), fill="black", font=("Arial", 5))
+            plot.create_text(x, y1 - 10, text=str(i * ticks_range * 20), fill="black", font=("Arial", 5))
 
         ticks = y1 // ticks_range
         if self.normalization.get() == Normalization.NORMED.name:
@@ -321,8 +321,9 @@ class Application(Tk):
         danger_level = status['danger_level']
         situation_type = status['situation_type']
         situation_description = status['situation_description']
+        time_before_a = status['time_before_a']
         self.result_area.insert(END,
-                                f'Time: {(index + 1) * 20}\nDanger level: {danger_level}\nSituation type: {situation_type}\n')
+                                f'Time: {(index + 1) * 20}\n Available risk : {time_before_a} \n Danger level: {danger_level}\nSituation type: {situation_type}\n')
         if situation_description != '':
             self.result_area.insert(END, f'Situation description: {situation_description}\n\n')
         else:

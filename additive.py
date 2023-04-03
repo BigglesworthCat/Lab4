@@ -26,10 +26,10 @@ class Polynomial:
             for position in np.arange(1, deg + 2):
                 polynomial_sum_coefficients[-position] += polynomial.coefficients[-position]
         return np.flipud(polynomial_sum_coefficients)
-
+from additional import remove_outliers
 
 class Solve():
-    def __init__(self, ui, degrees=None):
+    def __init__(self, ui, degrees=None,**kwargs):
         super().__init__(ui)
         if degrees is not None:
             self.x1_degree = degrees[0]
@@ -53,6 +53,10 @@ class Solve():
         self.estimate = self._get_estimate()
         self.error_normalized = self._get_error_normalized()
         self.error = self._get_error()
+        self.X1_pred = self.restore_X(kwargs.get('X1', None))
+        self.X2_pred = self.restore_X(kwargs.get('X2', None))
+        self.X3_pred = self.restore_X(kwargs.get('X3', None))
+        self.X4_pred = self.restore_X(kwargs.get('X4', None))
 
     def _load_data(self):
         input_data = np.loadtxt(self.input, unpack=True, max_rows=self.sample_size)
@@ -89,6 +93,8 @@ class Solve():
             model = model.fit()
             prediciton = model.predict(start=self.N_02 + 1, end=self.N_02 + self.prediction_step)
             X_restored.iloc[:, i] = prediciton.tolist()
+        for i in range(20, X.shape[1]):
+            X_restored = remove_outliers(X_restored,i)
         return X_restored
     
     def _normalized(self):

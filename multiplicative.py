@@ -1,16 +1,17 @@
 from copy import deepcopy
 from scipy import special
-from tabulate import tabulate as tb
+# from tabulate import tabulate as tb
 
-
+import statsmodels.api as sm
 import numpy as np
 import matplotlib.pyplot as plt
 
 from matplotlib.offsetbox import AnchoredText
 
+from additional import remove_outliers
 
 class PolynomialBuilder(object):
-    def __init__(self, solution):
+    def __init__(self, solution,**kwargs):
         assert isinstance(solution, Solve)
         b_gen = None
         self._solution = solution
@@ -33,6 +34,10 @@ class PolynomialBuilder(object):
         self.maxX = [X.max(axis=0).getA1() for X in solution.X_]
         self.minY = solution.Y_.min(axis=0).getA1()
         self.maxY = solution.Y_.max(axis=0).getA1()
+        self.X1_pred = self.restore_X(kwargs.get('X1', None))
+        self.X2_pred = self.restore_X(kwargs.get('X2', None))
+        self.X3_pred = self.restore_X(kwargs.get('X3', None))
+        self.X4_pred = self.restore_X(kwargs.get('X4', None))
 
     def _form_lamb_lists(self):
         self.psi = list()
@@ -55,7 +60,19 @@ class PolynomialBuilder(object):
             cp.resize(coeffs.shape)
             std_coeffs += coeffs[index] * cp
         return std_coeffs
-
+    def restore_X(self, X):
+        X_restored = X.copy()
+        X_restored = X_restored.iloc[:self.prediction_step]
+        for i in range(1, X.shape[1]):
+            X_i = X.iloc[:, i].to_list()
+            model = sm.tsa.AutoReg(X_i, lags=5)  # sm.tsa.ARIMA(X_i, order=(1, 0, 1))
+            model = model.fit()
+            prediciton = model.predict(start=self.N_02 + 1, end=self.N_02 + self.prediction_step)
+            X_restored.iloc[:, i] = prediciton.tolist()
+        for i in range(20, X.shape[1]):
+            X_restored = remove_outliers(X_restored,i)
+        return X_restored
+    
     def _print_psi_i_jk(self, i, j, k):
         strings = list()
         for n in range(len(self.psi[i][j][k])):

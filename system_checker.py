@@ -72,36 +72,24 @@ class SystemChecker:
         if 0 <= self.F <= 1 / 8:
             return float('inf')
         else:
-            if max(self.F1,self.F2,self.F3,self.F4) == self.F1:
                 dy = self.Y.iloc[index,1] - self.Y.iloc[index-1,1]
-                dt = 1 
-                next_value = self.Y.iloc[index,1] + dy
-                while next_value > self.Y1_a:
-                    dt +=1 
-                    next_value += dy
-                
-            elif max(self.F1,self.F2,self.F3,self.F4) == self.F2:
-                dy = self.Y.iloc[index,2] - self.Y.iloc[index-1,2]
-                dt = 1 
-                next_value = self.Y.iloc[index,2] + dy
-                while next_value > self.Y2_a:
-                    dt +=1 
-                    next_value += dy
-            elif max(self.F1,self.F2,self.F3,self.F4) == self.F3:
-                dy = self.Y.iloc[index,3] - self.Y.iloc[index-1,3]
-                dt = 1 
-                next_value = self.Y.iloc[index,3] + dy
-                while next_value < self.Y3_a:
-                    dt +=1 
-                    next_value += dy
+                dy = abs(dy)
+                dt = abs(self.Y.iloc[index,1] - self.Y1_a)//dy
                     
-            elif max(self.F1,self.F2,self.F3,self.F4) == self.F4:
+                
+                dy = self.Y.iloc[index,2] - self.Y.iloc[index-1,2]
+                dy = abs(dy)
+                dt = min([abs(self.Y.iloc[index,2] - self.Y2_a)//dy,dt])
+
+                dy = self.Y.iloc[index,3] - self.Y.iloc[index-1,3]
+                dy = abs(dy)
+                dt = min([abs(self.Y.iloc[index,3] - self.Y3_a)//dy,dt])
+
+                    
                 dy = self.Y.iloc[index,4] - self.Y.iloc[index-1,4]
-                dt = 1 
-                next_value = self.Y.iloc[index,4] + dy
-                while next_value < self.Y4_a:
-                    dt +=1 
-                    next_value += dy
+                dy = abs(dy)
+                dt = min([abs(self.Y.iloc[index,4] - self.Y4_a)//dy,dt])
+
         return dt
     
     def get_situation_type(self):

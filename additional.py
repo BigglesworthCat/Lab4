@@ -32,3 +32,12 @@ class Lambda(enum.Enum):
 class Normalization(enum.Enum):
     NORMED = 1
     UNNORMED = 2
+
+
+def remove_outliers(X,index):
+    if X[index] >= max(X[:index])*1.2:
+        X[index] = X[index-1]
+        return X, "Outlier"
+    return X, "Normal" 
+
+    
