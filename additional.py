@@ -28,3 +28,7 @@ class Weight(enum.Enum):
 class Lambda(enum.Enum):
     SINGLE_SET = 1
     TRIPLE_SET = 2
+
+class Normalization(enum.Enum):
+    NORMED = 1
+    UNNORMED = 2

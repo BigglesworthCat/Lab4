@@ -3,6 +3,8 @@
 from scipy import special
 import numpy as np
 import statsmodels.api as sm
+from scipy.sparse.linalg import cg
+
 
 class Polynomial:
     def __init__(self, polynomial_type):

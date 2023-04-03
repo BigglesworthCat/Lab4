@@ -1,3 +1,4 @@
+from additional import Form
 from multiplicative import Solve, PolynomialBuilder
 from additive import Solve as SolveMuliplicative
 from additive import Polynomial as PolynomialMuliplicative
@@ -17,7 +18,7 @@ def restore(**kwargs):
     f = None
     method = kwargs.pop('method', None)
     
-    if method == 'additive':
+    if method == Form.ADDITIVE.name:
         f = restore_additive
     else:
         f = restore_multiplicative

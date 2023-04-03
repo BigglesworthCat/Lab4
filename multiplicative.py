@@ -1,21 +1,18 @@
 from copy import deepcopy
 from scipy import special
-import numpy as np
 from tabulate import tabulate as tb
 
 
 import numpy as np
 import matplotlib.pyplot as plt
 
-from solve import Solve
-import polynoms as b_gen
-from polynom_pr import _Polynom
 from matplotlib.offsetbox import AnchoredText
 
 
 class PolynomialBuilder(object):
     def __init__(self, solution):
         assert isinstance(solution, Solve)
+        b_gen = None
         self._solution = solution
         max_degree = max(solution.p) - 1
         if solution.cheb:
@@ -170,9 +167,7 @@ class PolynomialBuilder(object):
         plt.show()
 
 
-
-    
-class Solve(object):
+class Solve:
     def __init__(self, d):
         self.n = d['samples']
         self.deg = d['dimensions']
@@ -391,3 +386,6 @@ class Solve(object):
         self.built_F_()
         self.save_to_file()
         return self.error
+
+def _Polynom(current_poly, param):
+    pass
