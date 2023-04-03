@@ -1,21 +1,26 @@
 import pandas as pd
 import numpy as np
-from sklearn.linear_model import LinearRegression, Lasso
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import MinMaxScaler
 
 import statsmodels.api as sm
 
 from additional import Mode, Form
+from method import *
 
 
 class Model:
-    def __init__(self, mode, form, N_02, prediction_step):
+    def __init__(self, mode, form, N_02, prediction_step, polynomials, P_dims, weights, lambdas):
         self.mode = mode
         self.form = form
 
         self.N_02 = N_02
         self.prediction_step = prediction_step
+
+        self.polynomials = polynomials
+        self.P_dims = P_dims
+        self.weights = weights
+        self.lambdas = lambdas
 
         postfix = ''
         if self.mode == Mode.NORMAL.name:
@@ -29,30 +34,24 @@ class Model:
         self.Y = pd.read_csv(f'./Final_Pump_{postfix}/Func_{postfix}.txt', header=None, sep='  ')
 
         if self.form == Form.ADDITIVE.name:
-            self.restore_Y = self.restore_additive
+            self.restore_Y = restore_additive
         elif self.form == Form.MULTIPLICATIVE.name:
-            self.restore_Y = self.restore_additive
+            self.restore_Y = restore_additive
 
-    def restore_rofl(self, X, Y):
-        noise = np.random.uniform(-0.1, 0.1, size=(len(Y), 5))
-        sin_t = np.sin([i for i in range(0,10020,20)])
-        noise = noise * sin_t
-        return self.Y + self.Y * noise
+    # def restore_rofl(self, X, Y):
+    #     noise = np.random.uniform(-0.1, 0.1, size=(len(Y), 5))
+    #     sin_t = np.sin([i for i in range(0, 10020, 20)])
+    #     noise = noise * sin_t
+    #     return self.Y + self.Y * noise
 
     def restore_rofl2(self):
         # np.arange(start=0,stop=10020,step=20)
-        Y = pd.concat([self.Y,self.Y[-self.prediction_step:].iloc[::-1]])  
+        Y = pd.concat([self.Y, self.Y[-self.prediction_step:].iloc[::-1]])
         noise = np.random.uniform(0, 0.01, size=(len(Y), 5))
-        sin_t = np.tile(np.cos([i for i in range(0,len(Y))]),(5,1)).T
-        noise = sin_t*noise
+        sin_t = np.tile(np.cos([i for i in range(0, len(Y))]), (5, 1)).T
+        noise = sin_t * noise
         print(Y.shape)
         return self.Y, Y + Y * noise
-
-    def restore_additive(self, X, Y):
-        return self.restore_rofl(X, Y)
-
-    def restore_multiplicative(self, X, Y):
-        return self.restore_rofl(X, Y)
 
     def restore(self):
         self.Y_pred = self.Y.copy()
@@ -66,10 +65,10 @@ class Model:
             Y3 = self.Y.iloc[i:i + self.N_02, 3]
             Y4 = self.Y.iloc[i:i + self.N_02, 4]
 
-            self.Y_pred.iloc[i:i + self.prediction_step, 1] = self.restore_Y_linear_regression(X1, Y1)
-            self.Y_pred.iloc[i:i + self.prediction_step, 2] = self.restore_Y_linear_regression(X2, Y2)
-            self.Y_pred.iloc[i:i + self.prediction_step, 3] = self.restore_Y_linear_regression(X3, Y3)
-            self.Y_pred.iloc[i:i + self.prediction_step, 4] = self.restore_Y_linear_regression(X4, Y4)
+            self.Y_pred.iloc[i:i + self.prediction_step, 1] = self.restore_Y(X1, Y1)
+            self.Y_pred.iloc[i:i + self.prediction_step, 2] = self.restore_Y(X2, Y2)
+            self.Y_pred.iloc[i:i + self.prediction_step, 3] = self.restore_Y(X3, Y3)
+            self.Y_pred.iloc[i:i + self.prediction_step, 4] = self.restore_Y(X4, Y4)
 
         return self.Y, self.Y_pred
 

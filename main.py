@@ -44,15 +44,19 @@ class Application(Tk):
         self.shifts_label_frame = LabelFrame(self.options_label_frame, text='Зсуви')
         self.shifts_label_frame.grid(row=3, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
+        self.N_02_value = StringVar()
         self.N_02_label = Label(self.shifts_label_frame, text='N_02:')
         self.N_02_label.grid(row=0, column=0, sticky='E')
-        self.N_02_spinbox = Spinbox(self.shifts_label_frame, from_=1, to=4, width=5)
+        self.N_02_spinbox = Spinbox(self.shifts_label_frame, from_=1, to=100, width=5, textvariable=self.N_02_value)
         self.N_02_spinbox.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
+        self.N_02_value.set('40')
 
+        self.prediction_step_value = StringVar()
         self.prediction_step_label = Label(self.shifts_label_frame, text='Крок передбачення:')
         self.prediction_step_label.grid(row=1, column=0, sticky='E')
-        self.prediction_step_spinbox = Spinbox(self.shifts_label_frame, from_=1, to=4, width=5)
+        self.prediction_step_spinbox = Spinbox(self.shifts_label_frame, from_=1, to=100, width=5, textvariable=self.prediction_step_value)
         self.prediction_step_spinbox.grid(row=1, column=1, sticky='WE', padx=5, pady=2)
+        self.prediction_step_value.set('20')
 
         # 'Поліноми'
         self.polynomials_label_frame = LabelFrame(self, text='Поліноми')
@@ -82,20 +86,34 @@ class Application(Tk):
         self.polynomials_dimensions_label_frame.grid(row=1, column=0, sticky='WENS', padx=5, pady=5, ipadx=5, ipady=5)
 
         self.polynomials_dimensions_label_frame.columnconfigure(1, weight=1)
+
+        self.p1_value = StringVar()
         self.p1_label = Label(self.polynomials_dimensions_label_frame, text='P1:')
         self.p1_label.grid(row=0, column=0, sticky='E')
-        self.p1_spinbox = Spinbox(self.polynomials_dimensions_label_frame, from_=1, to=4, width=5)
+        self.p1_spinbox = Spinbox(self.polynomials_dimensions_label_frame, from_=1, to=4, width=5, textvariable=self.p1_value)
         self.p1_spinbox.grid(row=0, column=1, sticky='WE', padx=5, pady=2)
+        self.p1_value.set('3')
 
+        self.p2_value = StringVar()
         self.p2_label = Label(self.polynomials_dimensions_label_frame, text='P2:')
         self.p2_label.grid(row=1, column=0, sticky='E')
-        self.p2_spinbox = Spinbox(self.polynomials_dimensions_label_frame, from_=1, to=4, width=5)
+        self.p2_spinbox = Spinbox(self.polynomials_dimensions_label_frame, from_=1, to=4, width=5, textvariable=self.p2_value)
         self.p2_spinbox.grid(row=1, column=1, sticky='WE', padx=5, pady=2)
+        self.p2_value.set('3')
 
+        self.p3_value = StringVar()
         self.p3_label = Label(self.polynomials_dimensions_label_frame, text='P3:')
         self.p3_label.grid(row=2, column=0, sticky='E')
-        self.p3_spinbox = Spinbox(self.polynomials_dimensions_label_frame, from_=1, to=4, width=5)
+        self.p3_spinbox = Spinbox(self.polynomials_dimensions_label_frame, from_=1, to=4, width=5, textvariable=self.p3_value)
         self.p3_spinbox.grid(row=2, column=1, sticky='WE', padx=5, pady=2)
+        self.p3_value.set('3')
+
+        self.p4_value = StringVar()
+        self.p4_label = Label(self.polynomials_dimensions_label_frame, text='P4:')
+        self.p4_label.grid(row=3, column=0, sticky='E')
+        self.p4_spinbox = Spinbox(self.polynomials_dimensions_label_frame, from_=1, to=4, width=5, textvariable=self.p4_value)
+        self.p4_spinbox.grid(row=3, column=1, sticky='WE', padx=5, pady=2)
+        self.p4_value.set('3')
 
         # 'Додатково'
         self.additional_label_frame = LabelFrame(self, text='Додатково')
@@ -301,10 +319,9 @@ class Application(Tk):
 
     def run(self):
         self.result_area.delete('1.0', END)
-        # model = Model(self.mode.get(), self.form.get(), int(self.N_02_spinbox.get()),
-        #               int(self.prediction_step_spinbox.get()))
-        model = Model(self.mode.get(), self.form.get(), 40, 20)
-        self.Y, self.Y_pred = model.restore_rofl2()
+        model = Model(self.mode.get(), self.form.get(), int(self.N_02_spinbox.get()),
+                      int(self.prediction_step_spinbox.get()))
+        self.Y, self.Y_pred = model.restore()
         print(self.Y_pred.shape)
         self.checker = SystemChecker(self.Y_pred)
         self.limits = self.checker.get_bounds()
