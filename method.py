@@ -2,6 +2,17 @@ import numpy as np
 import pandas as pd
 
 
+def restore(**kwargs):
+    method = kwargs.pop('method', None)
+    Y_local = kwargs.pop('Y', None)
+    prediction_step = kwargs.pop('prediction_step', None)
+    
+    if method == 'additive':
+        return restore_additive(Y_local, prediction_step=prediction_step)
+    else:
+        return restore_multiplicative(Y_local, prediction_step=prediction_step)
+
+
 def restore_additive(Y, prediction_step):
     Y_local = pd.concat([Y, Y[-prediction_step:].iloc[::-1]])
     noise = np.random.uniform(0, 0.03, size=(len(Y), 5))

@@ -36,7 +36,7 @@ class Model:
         if self.form == Form.ADDITIVE.name:
             self.restore_Y = restore_additive
         elif self.form == Form.MULTIPLICATIVE.name:
-            self.restore_Y = restore_additive
+            self.restore_Y = restore_multiplicative
 
     # def restore_rofl(self, X, Y):
     #     noise = np.random.uniform(-0.1, 0.1, size=(len(Y), 5))
@@ -53,22 +53,10 @@ class Model:
         print(Y.shape)
         return self.Y, Y + Y * noise
 
-    def restore(self):
-        self.Y_pred = self.Y.copy()
-        for i in range(0, len(self.Y) - self.N_02 + 1, self.prediction_step):
-            X1 = self.X1.iloc[i:i + self.N_02]
-            X2 = self.X2.iloc[i:i + self.N_02]
-            X3 = self.X3.iloc[i:i + self.N_02]
-            X4 = self.X4.iloc[i:i + self.N_02]
-            Y1 = self.Y.iloc[i:i + self.N_02, 1]
-            Y2 = self.Y.iloc[i:i + self.N_02, 2]
-            Y3 = self.Y.iloc[i:i + self.N_02, 3]
-            Y4 = self.Y.iloc[i:i + self.N_02, 4]
+    def restore(self,):
+        kwargs = {'prediction_step': self.prediction_step, 'N_02': self.N_02, 'Y':self.Y, 'X': self.X, 'p_dims': self.P_dims, 'polynomials' : self.polynomials }
 
-            self.Y_pred.iloc[i:i + self.prediction_step, 1] = self.restore_Y(X1, Y1)
-            self.Y_pred.iloc[i:i + self.prediction_step, 2] = self.restore_Y(X2, Y2)
-            self.Y_pred.iloc[i:i + self.prediction_step, 3] = self.restore_Y(X3, Y3)
-            self.Y_pred.iloc[i:i + self.prediction_step, 4] = self.restore_Y(X4, Y4)
+        self.restore_Y(**kwargs)
 
         return self.Y, self.Y_pred
 
