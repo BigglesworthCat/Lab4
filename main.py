@@ -289,9 +289,10 @@ class Application(Tk):
             plot.create_line(x, y1, x, y1 - 5)
             plot.create_text(x, y1 - 10, text=str(i * ticks_range * 20), fill="black", font=("Arial", 5))
 
+        ticks_range = 40
         ticks = y1 // ticks_range
         if self.normalization.get() == Normalization.NORMED.name:
-            y_tick_values = [round((i * ticks_range + ticks_range) / max(self.Y.iloc[:, column].to_list()), 3) for i in range(ticks)]
+            y_tick_values = [round((i * ticks_range + ticks_range ) / max(self.Y.iloc[:, column].to_list()), 3) for i in range(ticks)]
         else:
             y_tick_values = [i * ticks_range + ticks_range for i in range(ticks)]
         y_tick_values.reverse()
@@ -301,8 +302,9 @@ class Application(Tk):
             raise ValueError
         for j in range(ticks):
             y = j * ticks_range
+
             plot.create_line(5, y + self.shift_y, 0, y + self.shift_y)
-            plot.create_text(10, y + self.shift_y, text=str(y_tick_values[j]), fill="black", font=("Arial", 5))
+            plot.create_text(20, y + self.shift_y, text=str(y_tick_values[j]), fill="black", font=("Arial", 5))
 
     def update_values(self, index):
         self.Y1_value.set(self.Y_pred.iloc[index, 1])
